@@ -42,6 +42,22 @@ def listConversation(token, id):
         dic[Conversation["name"]]=[Conversation["id"],l]
     return dic
 
+
+def existWorkspace(name,token):
+
+    for workspace in getWorkspace(token):
+        if workspace["name"]==name:
+            return True
+    return False
+
+
+def joinWorkspace(name,token):
+    for workspace in getWorkspace(token):
+        if workspace["name"]==name:
+            return workspace["id"]
+
+
+
 def sendMessage(Conv_id, message, token):
     url = "https://api.twistapp.com/api/v2/conversation_messages/add"
     query = CallApi(url, {"Authorization" : token}, {"conversation_id" : id, "content" : message})
