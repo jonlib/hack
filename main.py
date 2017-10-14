@@ -1,16 +1,67 @@
 import requests
 import json
+import sys
+import getopt
 
-parameter = { "email" : "deanzhu2@gmail.com",
-              "password" : "dGOri9CY4O2k"
-              }
+#llama a la api
+def CallApi (url, Headers, Params):
+    q = json.loads(requests.get(url, headers = Headers, params = Params).content)
+    #tratamiento de error
+    return q
 
-response = requests.get("https://api.twistapp.com/api/v2/users/login", params = parameter)
-Webjson = json.loads(response.content)
-token = "Bearer " +  Webjson["token"]
-workspace = Webjson["default_workspace"]
+def Input_numerror(cur,need):
+    print("needed", need, "parameters and only got", cur)
 
-convapi = "https://api.twistapp.com/api/v2/conversations/get"
+def sendMessage(Conv_id, message, token):
+    url = "https://api.twistapp.com/api/v2/conversation_messages/add"
+    query = CallApi(url, {"Authorization" : token}, {"conversation_id" : id, "content" : message})
+    #print(query)
+    return 0
 
-query1 = json.loads(requests.get(convapi,headers= {"Authorization" : token}, params={"workspace_id" : workspace}).content)
-print(query1[0])
+def main():
+    #argument extractor
+    parameter = { "email" : "deanzhu2@gmail.com",
+                  "password" : "dGOri9CY4O2k"
+    }
+    login_url = "https://api.twistapp.com/api/v2/users/login"
+    response = CallApi(login_url, {},  parameter)
+    token = "Bearer " +  response["token"]
+    curWorkspace = -1
+    curConv = -1
+
+    while 1:
+        s = input()
+        params = s.split(' ')
+        sz = len(command)
+        command = params[0]
+        if command == "quit":
+            return 0
+
+        else if command == "listWorkspace":
+            listWorkspace()
+
+        else if command == "joinWorkspace":
+            if sz < 2:
+                Input_numerror(sz-1, 1)
+            else if not WorkspaceExist(params[1]):
+                print("This workspace doesn't exist")
+            else curWorkspace = joinWoskspace(params[1])
+
+        else if command == "listConversation":
+            listConversation()
+
+        else if command == "joinConversation":
+            joinConversation()
+
+        else if command == "sendMessage":
+            if curWorkspace == -1:
+                print("you have to join a Workspace to send a Message\n try joinWorkspace")
+            else if curConv == -1:
+                print("You have to join a Conversation to send a Message\n try joinConversation")
+            else if sz < 2:
+                Input_numerror(sz - 1,1)
+            else sendMessage(curConv, params[1], token)
+
+        print(sz)
+
+main()
