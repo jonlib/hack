@@ -12,6 +12,24 @@ def CallApi (url, Headers, Params):
 def Input_numerror(cur,need):
     print("needed", need, "parameters and only got", cur)
 
+
+def getWorkspaces(token):
+    getw="https://api.twistapp.com/api/v2/workspaces/get"
+    aut="Bearer "+token
+    response= requests.get(getw,headers={"Authorization": aut})
+    getworkspace=json.loads(response.content)
+    return getworkspace
+
+
+def listWorkspaces(token):
+    dic={}
+    for workspace in getWorkspaces(token):
+	l=[]
+	for user in workspace["users"]:
+	    l.append(user["name"].encode('utf-8'))
+	dic[workspace["name"].encode('utf-8')]=[workspace["id"],l]
+    return dic
+
 def sendMessage(Conv_id, message, token):
     url = "https://api.twistapp.com/api/v2/conversation_messages/add"
     query = CallApi(url, {"Authorization" : token}, {"conversation_id" : id, "content" : message})
@@ -48,10 +66,8 @@ def main():
                 print("This workspace doesn't exist")
             else curWorkspace = joinWorkspace(params[1], token)
 
-
         elif command == "listConversation":
             listConversation(token)
-
 
         elif command == "joinConversation":
             if sz < 2:
