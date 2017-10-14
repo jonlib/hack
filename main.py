@@ -27,7 +27,7 @@ def listWorkspace(token):
             l.append(user["name"])
         dic[workspace["name"]]=[workspace["id"],l]
 
-    print(dic)
+    print(dic.keys())
     return dic
 
 def sendMessage(Conv_id, message, token):
