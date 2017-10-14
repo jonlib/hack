@@ -24,10 +24,10 @@ def getWorkspaces(token):
 def listWorkspaces(token):
     dic={}
     for workspace in getWorkspaces(token):
-	l=[]
-	for user in workspace["users"]:
-	    l.append(user["name"].encode('utf-8'))
-	dic[workspace["name"].encode('utf-8')]=[workspace["id"],l]
+        l=[]
+        for user in workspace["users"]:
+            l.append(user["name"].encode('utf-8'))
+        dic[workspace["name"].encode('utf-8')]=[workspace["id"],l]
     return dic
 
 def sendMessage(Conv_id, message, token):
@@ -50,7 +50,7 @@ def main():
     while 1:
         s = input()
         params = s.split(' ')
-        sz = len(command)
+        sz = len(params)
         command = params[0]
         if command == "quit":
             return 0
@@ -64,7 +64,7 @@ def main():
                 Input_numerror(sz-1, 1)
             elif not WorkspaceExist(params[1], token):
                 print("This workspace doesn't exist")
-            else curWorkspace = joinWorkspace(params[1], token)
+            else: curWorkspace = joinWorkspace(params[1], token)
 
         elif command == "listConversation":
             listConversation(token)
@@ -74,7 +74,7 @@ def main():
                 Input_numerror(sz-1, 1)
             elif not ConversationExist(params[1], token):
                 print("This workspace doesn't exist")
-            else curConv = joinConversation(params[1], token)
+            else: curConv = joinConversation(params[1], token)
 
 
         elif command == "sendMessage":
@@ -84,7 +84,7 @@ def main():
                 print("You have to join a Conversation to send a Message\n try joinConversation")
             elif sz < 2:
                 Input_numerror(sz - 1,1)
-            else sendMessage(curConv, params[1], token)
+            else: sendMessage(curConv, params[1], token)
 
         print(sz)
 
