@@ -37,28 +37,36 @@ def main():
         if command == "quit":
             return 0
 
-        else if command == "listWorkspace":
-            listWorkspace()
+        elif command == "listWorkspace":
+            listWorkspace(token)
 
-        else if command == "joinWorkspace":
+
+        elif command == "joinWorkspace":
             if sz < 2:
                 Input_numerror(sz-1, 1)
-            else if not WorkspaceExist(params[1]):
+            elif not WorkspaceExist(params[1], token):
                 print("This workspace doesn't exist")
-            else curWorkspace = joinWoskspace(params[1])
+            else curWorkspace = joinWorkspace(params[1], token)
 
-        else if command == "listConversation":
-            listConversation()
 
-        else if command == "joinConversation":
-            joinConversation()
+        elif command == "listConversation":
+            listConversation(token)
 
-        else if command == "sendMessage":
+
+        elif command == "joinConversation":
+            if sz < 2:
+                Input_numerror(sz-1, 1)
+            elif not ConversationExist(params[1], token):
+                print("This workspace doesn't exist")
+            else curConv = joinConversation(params[1], token)
+
+
+        elif command == "sendMessage":
             if curWorkspace == -1:
                 print("you have to join a Workspace to send a Message\n try joinWorkspace")
-            else if curConv == -1:
+            elif curConv == -1:
                 print("You have to join a Conversation to send a Message\n try joinConversation")
-            else if sz < 2:
+            elif sz < 2:
                 Input_numerror(sz - 1,1)
             else sendMessage(curConv, params[1], token)
 
