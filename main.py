@@ -27,7 +27,19 @@ def listWorkspace(token):
         for user in workspace["users"]:
             l.append(user["name"])
         dic[workspace["name"]]=[workspace["id"],l]
+    return dic
 
+def getConversation(token, id):
+    getw="https://api.twistapp.com/api/v2/conversations/get"
+    Conversations = CallApi(getw, {"Authorization" : token}, {"workspace_id" : id})
+    return Conversations
+
+def listConversation(token, id):
+    dic={}
+    for Conversation in getConversation(token, id):
+        print('-' , Conversation["name"])
+        l=[]
+        dic[Conversation["name"]]=[Conversation["id"],l]
     return dic
 
 def sendMessage(Conv_id, message, token):
@@ -44,7 +56,7 @@ def main():
     login_url = "https://api.twistapp.com/api/v2/users/login"
     response = CallApi(login_url, {},  parameter)
     token = "Bearer " +  response["token"]
-    curWorkspace = -1
+    curWorkspace = 28548
     curConv = -1
     Workspaces={}
     while 1:
@@ -62,17 +74,17 @@ def main():
         elif command == "joinWorkspace":
             if sz < 2:
                 Input_numerror(sz-1, 1)
-            elif not WorkspaceExist(params[1], token):
+            elif not existWorkspace(params[1], token):
                 print("This workspace doesn't exist")
             else: curWorkspace = joinWorkspace(params[1], token)
 
         elif command == "listConversation":
-            listConversation(token)
+            listConversation(token, curWorkspace)
 
         elif command == "joinConversation":
             if sz < 2:
                 Input_numerror(sz-1, 1)
-            elif not ConversationExist(params[1], token):
+            elif not existConversation(params[1], token):
                 print("This workspace doesn't exist")
             else: curConv = joinConversation(params[1], token)
 
