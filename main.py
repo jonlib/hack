@@ -46,7 +46,7 @@ def main():
     token = "Bearer " +  response["token"]
     curWorkspace = -1
     curConv = -1
-
+    Workspaces={}
     while 1:
         s = input()
         params = s.split(' ')
@@ -56,7 +56,7 @@ def main():
             return 0
 
         elif command == "listWorkspace":
-            listWorkspace(token)
+            Workspaces = listWorkspace(token)
 
 
         elif command == "joinWorkspace":
@@ -85,7 +85,6 @@ def main():
             elif sz < 2:
                 Input_numerror(sz - 1,1)
             else: sendMessage(curConv, params[1], token)
-
-        print(sz)
+        else: print("invalid command")
 
 main()
