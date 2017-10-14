@@ -22,12 +22,12 @@ def getWorkspace(token):
 def listWorkspace(token):
     dic={}
     for workspace in getWorkspace(token):
+        print('-' , workspace["name"])
         l=[]
         for user in workspace["users"]:
             l.append(user["name"])
         dic[workspace["name"]]=[workspace["id"],l]
 
-    print(dic.keys())
     return dic
 
 def sendMessage(Conv_id, message, token):
@@ -52,7 +52,6 @@ def main():
         params = s.split(' ',1)
         sz = len(params)
         command = params[0]
-        print(params[1])
         if command == "quit":
             return 0
 
