@@ -49,9 +49,10 @@ def main():
     Workspaces={}
     while 1:
         s = input()
-        params = s.split(' ')
+        params = s.split(' ',1)
         sz = len(params)
         command = params[0]
+        print(params[1])
         if command == "quit":
             return 0
 
