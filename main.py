@@ -13,21 +13,21 @@ def Input_numerror(cur,need):
     print("needed", need, "parameters and only got", cur)
 
 
-def getWorkspaces(token):
+def getWorkspace(token):
     getw="https://api.twistapp.com/api/v2/workspaces/get"
-    aut="Bearer "+token
-    response= requests.get(getw,headers={"Authorization": aut})
-    getworkspace=json.loads(response.content)
+    getworkspace= CallApi(getw, {"Authorization" : token}, {})
     return getworkspace
 
 
-def listWorkspaces(token):
+def listWorkspace(token):
     dic={}
-    for workspace in getWorkspaces(token):
+    for workspace in getWorkspace(token):
         l=[]
         for user in workspace["users"]:
-            l.append(user["name"].encode('utf-8'))
-        dic[workspace["name"].encode('utf-8')]=[workspace["id"],l]
+            l.append(user["name"])
+        dic[workspace["name"]]=[workspace["id"],l]
+
+    print(dic)
     return dic
 
 def sendMessage(Conv_id, message, token):
