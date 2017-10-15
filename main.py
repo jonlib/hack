@@ -211,8 +211,15 @@ def main():
             return 0
 
         elif command == "help":
-             print("[list|join] + [Workspace|Conversation|Channel|Thread] to connected or see the available room\n"+
-            "use [sendMessage] to send a message to a conversation\nuse [addComment] to add a comment to a thread\n[quit] if you want to exit the app")
+             print(
+                 "[list|join] + [Workspace|Conversation|Channel|Thread] [Name] to connect or see the available room\n"+
+                 "[sendMessage] to send a message to a conversation\n[addComment] to add a comment to a thread\n" +
+                 "[addThread] to create a new parentless thread\n" +
+                 "[addChildThread] to create a child thrad to the current Thread\n"+
+                 "[finishThread] to finish the child Thread\n" +
+                 "[isFinishedThread] to ask the state of the thread and its child\n" +
+                 "[quit] if you want to exit the app"
+             )
         elif command == "listWorkspace":
             listWorkspace(token)
 
