@@ -143,6 +143,8 @@ def addThread(parentId, title, content, channelId, token):
     url = "https://api.twistapp.com/api/v2/threads/add"
     NewThread = CallApi(url, {"Authorization" : token}, {"channel_id" : channelId, "title" : title, "content" : content})
     Node[NewThread["id"]] = 0;
+    AdjList[NewThread["id"]] = []
+
     if parentId != -1:
         Parent[NewThread["id"]] = parentId
         if parentId in Node.keys() :
@@ -151,16 +153,15 @@ def addThread(parentId, title, content, channelId, token):
             Node[parentId] = 1
             AdjList[parentId] = []
 
-
         AdjList[parentId].append(NewThread["id"])
 
 def finishThread(threadId):
     if Node[threadId] != 0:
         print("You cannot finish this thread because there are unfinished child threads")
         return 1
-    while threadId != -1 and Node[threadId] == 0:
-        Node[threadId] -= 1
-        threadId = Parent[threadId]
+    Node[threadId] -= 1
+    threadId = Parent[threadId]
+    if threadId != -1:
         Node[threadId] -= 1
 
 def isFinished(threadId):
@@ -169,6 +170,20 @@ def isFinished(threadId):
     elif Node[threadId] == 0:
         print("All the childs are finished, but this thread is still in progress")
     else: print("This Thread still has unfinished childs")
+
+def getThreadTitle(threadId, token):
+    url = "https://api.twistapp.com/api/v2/threads/getone"
+    q = CallApi(url, {"Authorization" : token}, {"id" : threadId})
+    return q["title"]
+
+
+def dfs(threadId, depth, token):
+    tmp = ""
+    for i in range(depth):
+        tmp += "--"
+    print (tmp + getThreadTitle(threadId, token))
+    for child in AdjList[threadId]:
+        dfs(child, depth+1, token)
 
 def main():
     #argument extractor
@@ -182,7 +197,6 @@ def main():
     curConv = -1
     curChannel = -1
     curThread = -1
-    Workspaces={}
     print("Hello", response["name"], '!')
     while 1:
         s = input()
@@ -197,10 +211,10 @@ def main():
             return 0
 
         elif command == "help":
-            print("[list|join] + [Workspace|Conversation|Channel|Thread] to connected or see the available room\n"+
+             print("[list|join] + [Workspace|Conversation|Channel|Thread] to connected or see the available room\n"+
             "use [sendMessage] to send a message to a conversation\nuse [addComment] to add a comment to a thread\n[quit] if you want to exit the app")
         elif command == "listWorkspace":
-            Workspaces = listWorkspace(token)
+            listWorkspace(token)
 
         elif command == "joinWorkspace":
             if sz < 2:
@@ -235,7 +249,7 @@ def main():
             elif sz < 2:
                 Input_numerror(sz-1, 1)
             elif not existChannel(params[1], token, curWorkspace):
-                print("This conversation doesn't exist")
+                print("This channel doesn't exist")
             else: curChannel = joinChannel(params[1], token, curWorkspace)
 
         elif command == "listThread":
@@ -290,6 +304,18 @@ def main():
                 Content = input()
                 addThread(curThread, params[1], Content, curChannel, token)
 
+        elif command == "addThread":
+            if curWorkspace == -1:
+                print("You have to be in a Workspace to add a child")
+            elif curChannel == -1:
+                print("You have to be in a Channel to add a child")
+            elif sz < 2:
+                 Input_numerror(sz - 1,1)
+            else:
+                print("What's the content for this new thread?")
+                Content = input()
+                addThread(-1, params[1], Content, curChannel, token)
+
         elif command == "finishThread":
             if curWorkspace == -1:
                 print("You have to be in a Workspace to finish a Node")
@@ -297,8 +323,6 @@ def main():
                 print("You have to be in a Channel to finish a Node")
             elif curThread == -1:
                 print("You have to be in a Thread to finish it")
-            elif sz < 2:
-                 Input_numerror(sz - 1,1)
             else:
                 finishThread(curThread)
 
@@ -309,10 +333,20 @@ def main():
                 print("You have to be in a Channel to check a Thread")
             elif curThread == -1:
                 print("You have to be in a Thread check it")
-            elif sz < 2:
-                Input_numerror(sz - 1,1)
             else:
                 isFinished(curThread)
+
+        elif command == "listChildrenThread":
+            if curWorkspace == -1:
+                print("You have to be in a Workspace to check a Thread")
+            elif curChannel == -1:
+                print("You have to be in a Channel to check a Thread")
+            elif curThread == -1:
+                print("You have to be in a Thread check it")
+            else:
+                dfs(curThread, 1, token)
+
+
         else: print("invalid command - There is a [help] command in case you need it")
 
 main()
