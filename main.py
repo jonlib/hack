@@ -2,12 +2,15 @@ import requests
 import json
 import sys
 import getopt
+import asyncio
+import time
+from threading import Thread
 
 Parent = {}
 
 Node = {}
 AdjList = {}
-
+stop = 0
 #llama a la api
 def CallApi (url, Headers, Params):
     q = json.loads(requests.get(url, headers = Headers, params = Params).content)
@@ -16,7 +19,6 @@ def CallApi (url, Headers, Params):
 
 def Input_numerror(cur,need):
     print("needed", need, "parameters and only got", cur)
-
 
 def getWorkspace(token):
     getw="https://api.twistapp.com/api/v2/workspaces/get"
@@ -184,6 +186,22 @@ def dfs(threadId, depth, token):
     print (tmp + getThreadTitle(threadId, token))
     for child in AdjList[threadId]:
         dfs(child, depth+1, token)
+
+def getMessages(token,id,index):
+  url = "https://api.twistapp.com/api/v2/conversation_messages/get"
+  query = CallApi(url, {"Authorization" : token}, {"conversation_id" : id, "from_obj_index" : index})
+  return query
+
+def messageListener(token,curConv):
+	global stop
+	index = -1
+	while stop == 0:
+		query = getMessages(token,curConv,index+1)
+		for dic in query:
+			ifjoin
+				print(dic["content"])
+				index = dic["obj_index"]
+		time.sleep(5)
 
 def main():
     #argument extractor
