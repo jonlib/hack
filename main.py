@@ -159,8 +159,16 @@ def finishThread(threadId):
         print("You cannot finish this thread because there are unfinished child threads")
         return 1
     while threadId != -1 and Node[threadId] == 0:
+        Node[threadId] -= 1
         threadId = Parent[threadId]
         Node[threadId] -= 1
+
+def isFinished(threadId):
+    if Node[threadId] == -1:
+        print("This thread and all it's child are finished")
+    elif Node[threadId] == 0:
+        print("All the childs are finished, but this thread is still in progress")
+    else: print("This Thread still has unfinished childs")
 
 def main():
     #argument extractor
@@ -202,10 +210,14 @@ def main():
             else: curWorkspace = joinWorkspace(params[1], token)
 
         elif command == "listConversation":
-            listConversation(token, curWorkspace)
+            if curWorkspace == -1:
+                print("you have to join a Workspace to see its Conversations\n try joinWorkspace")
+            else: listConversation(token, curWorkspace)
 
         elif command == "joinConversation":
-            if sz < 2:
+            if curWorkspace == -1:
+                print("you have to join a Workspace to join its Conversations\n try joinWorkspace")
+            elif sz < 2:
                 Input_numerror(sz-1, 1)
             elif not existConversation(params[1], token, curWorkspace):
                 print("This conversation doesn't exist")
@@ -213,20 +225,32 @@ def main():
 
 
         elif command == "listChannel":
-            listChannel(token, curWorkspace)
+            if curWorkspace == -1:
+                print("you have to join a Workspace to see its Channels\n try joinWorkspace")
+            else: listChannel(token, curWorkspace)
 
         elif command == "joinChannel":
-            if sz < 2:
+            if curWorkspace == -1:
+                print("you have to join a Workspace to join its Channels\n try joinWorkspace")
+            elif sz < 2:
                 Input_numerror(sz-1, 1)
             elif not existChannel(params[1], token, curWorkspace):
                 print("This conversation doesn't exist")
             else: curChannel = joinChannel(params[1], token, curWorkspace)
 
         elif command == "listThread":
-            listThread(token, curChannel)
+            if curWorkspace == -1:
+                print("you have to join a Workspace to see its threads\n try joinWorkspace")
+            elif curChannel == -1:
+                print("You have to join a Channel to see it's threads\n try joinChannel")
+            else: listThread(token, curChannel)
 
         elif command == "joinThread":
-            if sz < 2:
+            if curWorkspace == -1:
+                print("you have to join a Workspace to join\n try joinWorkspace")
+            elif curChannel == -1:
+                print("You have to join a Channel to join\n try joinChannel")
+            elif sz < 2:
                 Input_numerror(sz-1, 1)
             elif not existThread(params[1], token, curChannel):
                 print("This Thread  doesn't exist")
@@ -244,8 +268,10 @@ def main():
         elif command == "addComment":
             if curWorkspace == -1:
                 print("you have to join a Workspace to send a Comment\n try joinWorkspace")
+            elif curChannel == -1:
+                print("You have to join a Channel to send a Comment\n try joinChannel")
             elif curThread == -1:
-                print("You have to join a Thread to send a Comment\n try joinConversation")
+                print("You have to join a Thread to send a Comment\n try joinThread")
             elif sz < 2:
                 Input_numerror(sz - 1,1)
             else: addComment(curThread, params[1], token)
@@ -264,6 +290,29 @@ def main():
                 Content = input()
                 addThread(curThread, params[1], Content, curChannel, token)
 
+        elif command == "finishThread":
+            if curWorkspace == -1:
+                print("You have to be in a Workspace to finish a Node")
+            elif curChannel == -1:
+                print("You have to be in a Channel to finish a Node")
+            elif curThread == -1:
+                print("You have to be in a Thread to finish it")
+            elif sz < 2:
+                 Input_numerror(sz - 1,1)
+            else:
+                finishThread(curThread)
+
+        elif command == "isFinishedThread":
+            if curWorkspace == -1:
+                print("You have to be in a Workspace to check a Thread")
+            elif curChannel == -1:
+                print("You have to be in a Channel to check a Thread")
+            elif curThread == -1:
+                print("You have to be in a Thread check it")
+            elif sz < 2:
+                Input_numerror(sz - 1,1)
+            else:
+                isFinished(curThread)
         else: print("invalid command - There is a [help] command in case you need it")
 
 main()
