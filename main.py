@@ -3,6 +3,11 @@ import json
 import sys
 import getopt
 
+Parent = {}
+
+Node = {}
+AdjList = {}
+
 #llama a la api
 def CallApi (url, Headers, Params):
     q = json.loads(requests.get(url, headers = Headers, params = Params).content)
@@ -133,7 +138,29 @@ def sendMessage(convId, message, token):
     #print(query)
     return 0
 
+#if it is a standalone thread call parentId = -1, else use the parent threads id
+def addThread(parentId, title, content, channelId, token):
+    url = "https://api.twistapp.com/api/v2/threads/add"
+    NewThread = CallApi(url, {"Authorization" : token}, {"channel_id" : channelId, "title" : title, "content" : content})
+    Node[NewThread["id"]] = 0;
+    if parentId != -1:
+        Parent[NewThread["id"]] = parentId
+        if parentId in Node.keys() :
+            Node[parentId] += 1
+        else:
+            Node[parentId] = 1
+            AdjList[parentId] = []
 
+
+        AdjList[parentId].append(NewThread["id"])
+
+def finishThread(threadId):
+    if Node[threadId] != 0:
+        print("You cannot finish this thread because there are unfinished child threads")
+        return 1
+    while threadId != -1 and Node[threadId] == 0:
+        threadId = Parent[threadId]
+        Node[threadId] -= 1
 
 def main():
     #argument extractor
@@ -148,6 +175,7 @@ def main():
     curChannel = -1
     curThread = -1
     Workspaces={}
+    print("Hello", response["name"], '!')
     while 1:
         s = input()
         params = s.split(' ',1)
@@ -160,9 +188,11 @@ def main():
         if command == "quit":
             return 0
 
+        elif command == "help":
+            print("[list|join] + [Workspace|Conversation|Channel|Thread] to connected or see the available room\n"+
+            "use [sendMessage] to send a message to a conversation\nuse [addComment] to add a comment to a thread\n[quit] if you want to exit the app")
         elif command == "listWorkspace":
             Workspaces = listWorkspace(token)
-
 
         elif command == "joinWorkspace":
             if sz < 2:
@@ -220,7 +250,20 @@ def main():
                 Input_numerror(sz - 1,1)
             else: addComment(curThread, params[1], token)
 
+        elif command == "addChildThread":
+            if curWorkspace == -1:
+                print("You have to be in a Workspace to add a child")
+            elif curChannel == -1:
+                print("You have to be in a Channel to add a child")
+            elif curThread == -1:
+                print("You have to be in a Thread to add a Child Thread")
+            elif sz < 2:
+                 Input_numerror(sz - 1,1)
+            else:
+                print("What's the content for this new thread?")
+                Content = input()
+                addThread(curThread, params[1], Content, curChannel, token)
 
-        else: print("invalid command")
+        else: print("invalid command - There is a [help] command in case you need it")
 
 main()
