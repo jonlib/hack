@@ -93,35 +93,39 @@ def joinChannel(name, token, id):
             print("entered", name, "Channel")
             return Channel["id"]
 
-##############################################
-
 ###################################################
 
-def getConversation(token, id):
-    getw="https://api.twistapp.com/api/v2/conversations/get"
-    Conversations = CallApi(getw, {"Authorization" : token}, {"workspace_id" : id})
-    return Conversations
+def getThread(token, channelId):
+    getw="https://api.twistapp.com/api/v2/threads/get"
+    Threads = CallApi(getw, {"Authorization" : token}, {"channel_id" : channelId})
+    return Threads
 
-def listConversation(token, id):
+def listThread(token, channelId):
     dic={}
-    for Conversation in getConversation(token, id):
-        print('-' , Conversation["name"])
-        dic[Conversation["name"]]=[Conversation["id"]]
+    for Thread in getThread(token, channelId):
+        print('-' , Thread["title"])
+        dic[Thread["title"]]=[Thread["id"]]
     return dic
 
-def existConversation(name, token, id):
-    for Conversation in getConversation(token, id):
-        if Conversation["name"]==name:
+def existThread(name, token, channelId):
+    for Thread in getThread(token, channelId):
+        if Thread["title"]==name:
             return True
     return False
 
-def joinConversation(name, token, id):
-    for Conversation in getConversation(token, id):
-        if Conversation["name"]==name:
-            print("entered", name, "Conversation")
-            return Conversation["id"]
+def joinThread(name, token, channelId):
+    for Thread in getThread(token, channelId):
+        if Thread["title"]==name:
+            print("entered", name, "Thread")
+            return Thread["id"]
 
-############################################
+#################################################
+
+
+def addComment(threadId, message, token):
+    url="https://api.twistapp.com/api/v2/comments/add"
+    query = CallApi(url, {"Authorization" : token}, {"thread_id" : threadId, "content" : message})
+    return 0
 
 def sendMessage(convId, message, token):
     url = "https://api.twistapp.com/api/v2/conversation_messages/add"
@@ -141,7 +145,8 @@ def main():
     token = "Bearer " +  response["token"]
     curWorkspace = -1
     curConv = -1
-    curChan = -1
+    curChannel = -1
+    curThread = -1
     Workspaces={}
     while 1:
         s = input()
@@ -185,7 +190,17 @@ def main():
                 Input_numerror(sz-1, 1)
             elif not existChannel(params[1], token, curWorkspace):
                 print("This conversation doesn't exist")
-            else: curChan = joinChannel(params[1], token, curWorkspace)
+            else: curChannel = joinChannel(params[1], token, curWorkspace)
+
+        elif command == "listThread":
+            listThread(token, curChannel)
+
+        elif command == "joinThread":
+            if sz < 2:
+                Input_numerror(sz-1, 1)
+            elif not existThread(params[1], token, curChannel):
+                print("This Thread  doesn't exist")
+            else: curThread = joinThread(params[1], token, curChannel)
 
         elif command == "sendMessage":
             if curWorkspace == -1:
@@ -195,6 +210,17 @@ def main():
             elif sz < 2:
                 Input_numerror(sz - 1,1)
             else: sendMessage(curConv, params[1], token)
+
+        elif command == "addComment":
+            if curWorkspace == -1:
+                print("you have to join a Workspace to send a Comment\n try joinWorkspace")
+            elif curThread == -1:
+                print("You have to join a Thread to send a Comment\n try joinConversation")
+            elif sz < 2:
+                Input_numerror(sz - 1,1)
+            else: addComment(curThread, params[1], token)
+
+
         else: print("invalid command")
 
 main()
