@@ -1,4 +1,3 @@
-
 def Input_numerror(cur,need):
     print("needed", need, "parameters and only got", cur)
 
@@ -174,62 +173,62 @@ def dfs(threadId, depth, token):
         dfs(child, depth+1, token)
 
 def messageListener(token,curConv):
-	global stop
-	index = -1
-	
-	while stop == 0:
-		query = getMessages(token,curConv,index+1)
-		for dic in query:
-			if dic["creator"] != userId:
-				print(dic["content"])
-				index = dic["obj_index"]
-		time.sleep(1)
+        global stop
+        index = -1
+
+        while stop == 0:
+                query = getMessages(token,curConv,index+1)
+                for dic in query:
+                        if dic["creator"] != userId:
+                                print(dic["content"])
+                                index = dic["obj_index"]
+                time.sleep(1)
 
 def main():
-	#argument extractor
-	parameter = { "email" : "deanzhu2@gmail.com",
-				  "password" : "dGOri9CY4O2k"
-	}
-	login_url = "https://api.twistapp.com/api/v2/users/login"
-	response = CallApi(login_url, {},  parameter)
-	token = "Bearer " +  response["token"]
-	curWorkspace = -1
-	curConv = -1
-	curChannel = -1
-	curThread = -1
-	global stop
-	print("Hello", response["name"], '!')
-	while 1:
-		s = input()
-		params = s.split(' ',1)
-		sz = len(params)
-		command = params[0]
-		
-		if command == "quit":
-			return 0
-		elif command == "startConversation": 
-			if curConv != -1: 
-				background_thread = Thread(target=messageListener, args=(token,curConv))
-				background_thread.start()
-			else: 
-				print("You are not in a current conversation") 
-		elif command == "stopConversation":
-			if curConv != -1:
-				stop = 1
-			else:
-				print("There is no conversation to stop")
-		elif command == "help":
-			print( 
-				 "[list|join] + [Workspace|Conversation|Channel|Thread] [Name] to connect or see the available room\n"+ 
-				 "[sendMessage] to send a message to a conversation\n[addComment] to add a comment to a thread\n" + 
-				 "[addThread] to create a new parentless thread\n" + 
-				 "[addChildThread] to create a child thrad to the current Thread\n"+ 
-				 "[finishThread] to finish the child Thread\n" + 
-				 "[isFinishedThread] to ask the state of the thread and its child\n" + 
-				 "[quit] if you want to exit the app" 
-			)
-		elif command == "listWorkspace":
-			listWorkspace(token)
+        #argument extractor
+        parameter = { "email" : "deanzhu2@gmail.com",
+                                  "password" : "dGOri9CY4O2k"
+        }
+        login_url = "https://api.twistapp.com/api/v2/users/login"
+        response = CallApi(login_url, {},  parameter)
+        token = "Bearer " +  response["token"]
+        curWorkspace = -1
+        curConv = -1
+        curChannel = -1
+        curThread = -1
+        global stop
+        print("Hello", response["name"], '!')
+        while 1:
+                s = input()
+                params = s.split(' ',1)
+                sz = len(params)
+                command = params[0]
+
+                if command == "quit":
+                        return 0
+                elif command == "startConversation":
+                        if curConv != -1:
+                                background_thread = Thread(target=messageListener, args=(token,curConv))
+                                background_thread.start()
+                        else:
+                                print("You are not in a current conversation")
+                elif command == "stopConversation":
+                        if curConv != -1:
+                                stop = 1
+                        else:
+                                print("There is no conversation to stop")
+                elif command == "help":
+                        print(
+                                 "[list|join] + [Workspace|Conversation|Channel|Thread] [Name] to connect or see the available room\n"+
+                                 "[sendMessage] to send a message to a conversation\n[addComment] to add a comment to a thread\n" +
+                                 "[addThread] to create a new parentless thread\n" +
+                                 "[addChildThread] to create a child thrad to the current Thread\n"+
+                                 "[finishThread] to finish the child Thread\n" +
+                                 "[isFinishedThread] to ask the state of the thread and its child\n" +
+                                 "[quit] if you want to exit the app"
+                        )
+                elif command == "listWorkspace":
+                        listWorkspace(token)
 
         #if curConv != -1:
             #getMessage()
@@ -560,62 +559,62 @@ def dfs(threadId, depth, token):
         dfs(child, depth+1, token)
 
 def messageListener(token,curConv):
-	global stop
-	index = -1
-	
-	while stop == 0:
-		query = getMessages(token,curConv,index+1)
-		for dic in query:
-			if dic["creator"] != userId:
-				print(dic["content"])
-				index = dic["obj_index"]
-		time.sleep(1)
+        global stop
+        index = -1
+
+        while stop == 0:
+                query = getMessages(token,curConv,index+1)
+                for dic in query:
+                        if dic["creator"] != userId:
+                                print(dic["content"])
+                                index = dic["obj_index"]
+                time.sleep(1)
 
 def main():
-	#argument extractor
-	parameter = { "email" : "deanzhu2@gmail.com",
-				  "password" : "dGOri9CY4O2k"
-	}
-	login_url = "https://api.twistapp.com/api/v2/users/login"
-	response = CallApi(login_url, {},  parameter)
-	token = "Bearer " +  response["token"]
-	curWorkspace = -1
-	curConv = -1
-	curChannel = -1
-	curThread = -1
-	global stop
-	print("Hello", response["name"], '!')
-	while 1:
-		s = input()
-		params = s.split(' ',1)
-		sz = len(params)
-		command = params[0]
-		
-		if command == "quit":
-			return 0
-		elif command == "startConversation": 
-			if curConv != -1: 
-				background_thread = Thread(target=messageListener, args=(token,curConv))
-				background_thread.start()
-			else: 
-				print("You are not in a current conversation") 
-		elif command == "stopConversation":
-			if curConv != -1:
-				stop = 1
-			else:
-				print("There is no conversation to stop")
-		elif command == "help":
-			print( 
-				 "[list|join] + [Workspace|Conversation|Channel|Thread] [Name] to connect or see the available room\n"+ 
-				 "[sendMessage] to send a message to a conversation\n[addComment] to add a comment to a thread\n" + 
-				 "[addThread] to create a new parentless thread\n" + 
-				 "[addChildThread] to create a child thrad to the current Thread\n"+ 
-				 "[finishThread] to finish the child Thread\n" + 
-				 "[isFinishedThread] to ask the state of the thread and its child\n" + 
-				 "[quit] if you want to exit the app" 
-			)
-		elif command == "listWorkspace":
-			listWorkspace(token)
+        #argument extractor
+        parameter = { "email" : "deanzhu2@gmail.com",
+                                  "password" : "dGOri9CY4O2k"
+        }
+        login_url = "https://api.twistapp.com/api/v2/users/login"
+        response = CallApi(login_url, {},  parameter)
+        token = "Bearer " +  response["token"]
+        curWorkspace = -1
+        curConv = -1
+        curChannel = -1
+        curThread = -1
+        global stop
+        print("Hello", response["name"], '!')
+        while 1:
+                s = input()
+                params = s.split(' ',1)
+                sz = len(params)
+                command = params[0]
+
+                if command == "quit":
+                        return 0
+                elif command == "startConversation":
+                        if curConv != -1:
+                                background_thread = Thread(target=messageListener, args=(token,curConv))
+                                background_thread.start()
+                        else:
+                                print("You are not in a current conversation")
+                elif command == "stopConversation":
+                        if curConv != -1:
+                                stop = 1
+                        else:
+                                print("There is no conversation to stop")
+                elif command == "help":
+                        print(
+                                 "[list|join] + [Workspace|Conversation|Channel|Thread] [Name] to connect or see the available room\n"+
+                                 "[sendMessage] to send a message to a conversation\n[addComment] to add a comment to a thread\n" +
+                                 "[addThread] to create a new parentless thread\n" +
+                                 "[addChildThread] to create a child thrad to the current Thread\n"+
+                                 "[finishThread] to finish the child Thread\n" +
+                                 "[isFinishedThread] to ask the state of the thread and its child\n" +
+                                 "[quit] if you want to exit the app"
+                        )
+                elif command == "listWorkspace":
+                        listWorkspace(token)
 
         #if curConv != -1:
             #getMessage()
