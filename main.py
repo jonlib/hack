@@ -769,4 +769,5 @@ def main():
 
         else: print("invalid command - There is a [help] command in case you need it")
 
-main()
+if __name__ == '__main__':
+    main()
